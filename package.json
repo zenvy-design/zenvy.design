@@ -10,7 +10,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node polyfill-webcrypto.js",
+    "prebuild": "node polyfill-webcrypto.cjs",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
