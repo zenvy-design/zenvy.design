@@ -1,214 +1,126 @@
-import React, { PropsWithChildren, ReactNode } from "react";
-import styled, { css } from "styled-components";
+import React from "react";
+import clsx from "clsx";
+import Ripple from "../utils/Ripple";
 
-// Define your button props
-type ButtonProps = PropsWithChildren<{
+type ButtonProps = {
+  text: string;
+  width?: "full" | "fit";
   onClick?: () => void;
   variant?: "primary" | "base" | "solid" | "text";
+  status?: "success" | "error" | "warning";
+  iconLeft?: React.ReactNode;
+  iconRight?: React.ReactNode;
+  icon?: React.ReactNode;
+  isIconOnly?: boolean;
   size?: "sm" | "md" | "lg";
-  iconLeft?: ReactNode;
-  iconRight?: ReactNode;
-}>;
-
-// Helper functions for dynamic styles
-const getSizeStyles = (size: "sm" | "md" | "lg") => {
-  switch (size) {
-    case "sm":
-      return css`
-        height: 32px;
-        font-size: 12px;
-        padding: 0px 12px;
-      `;
-    case "md":
-      return css`
-        height: 36px;
-        font-size: 14px;
-        padding: 0px 12px;
-      `;
-    case "lg":
-      return css`
-        height: 40px;
-        font-size: 16px;
-        padding: 0px 12px;
-      `;
-    default:
-      return "";
-  }
+  disabled?: boolean;
 };
 
-const getVariantStyles = (variant: "primary" | "base" | "solid" | "text") => {
-  switch (variant) {
-    case "primary":
-      return css`
-        border: 1px solid #3b82f6;
-        background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
-        color: white;
-
-        /* Hover effect */
-        &:hover {
-          border: 1px solid #60a5fa;
-          box-shadow: 0px 0px 0px 2px #bfdbfe;
-        }
-
-        /* Disabled effect */
-        &:disabled {
-          border: 1px solid #e5e6eb;
-          background: #e5e6eb;
-          color: "#9CA3AF";
-        }
-      `;
-    case "base":
-      return css`
-        border: 1px solid #e5e6eb;
-        background: #f9fafb;
-        color: #212529;
-
-        /* Hover effect */
-        &:hover {
-          border: 1px solid #2563eb;
-          box-shadow: 0px 0px 0px 2px #bfdbfe;
-        }
-
-        /* Disabled effect */
-        &:disabled {
-          border: 1px solid #e5e6eb;
-          background: #e5e6eb;
-          color: "#9CA3AF";
-        }
-      `;
-    case "solid":
-      return css`
-        border: 1px solid #e5e6eb;
-        background: #fff;
-        color: #212529;
-
-        /* Hover effect */
-        &:hover {
-          border: 1px solid #2563eb;
-          box-shadow: 0px 0px 0px 2px #bfdbfe;
-        }
-
-        /* Disabled effect */
-        &:disabled {
-          border: 1px solid #e5e6eb;
-          background: #e5e6eb;
-          color: "#9CA3AF";
-        }
-      `;
-    case "text":
-      return css`
-        border: 1px solid transparent;
-        background-color: transparent;
-        color: #212529;
-        /* Hover effect */
-        &:hover {
-          border-radius: 8px;
-          border: 1px solid #2563eb;
-          background: transparent;
-        }
-        &:active {
-          box-shadow: 0px 0px 0px 2px #bfdbfe;
-        }
-
-        /* Disabled effect */
-        &:disabled {
-          border: 1px solid #e5e6eb;
-          color: "#9CA3AF";
-        }
-      `;
-    default:
-      return "";
-  }
-};
-
-// Create a styled button component
-const StyledButton = styled.button<{
-  variant: "primary" | "base" | "solid" | "text";
-  size: "sm" | "md" | "lg";
-}>`
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  border-radius: 8px;
-  cursor: pointer;
-  gap: 8px;
-  outline: none;
-  transition: transform 0.1s ease, filter 0.1s ease, box-shadow 0.1s ease;
-  transform-origin: center;
-
-  /* Apply size and variant styles */
-  ${({ size }) => getSizeStyles(size)}
-  ${({ variant }) => getVariantStyles(variant)}
-
-
-  /* Active (click) effect using scale for a smooth look */
-  &:active {
-    /* Force the height to remain the same to avoid rounding issues */
-    height: ${({ size }) => {
-      switch (size) {
-        case "sm":
-          return "32px";
-        case "md":
-          return "36px";
-        case "lg":
-          return "40px";
-        default:
-          return "36px";
-      }
-    }};
-    transform: scale3d(0.98, 0.98, 1);
-  }
-`;
-
-// Helper to determine the icon size based on button size
-const getIconSize = (size: "sm" | "md" | "lg") => {
-  switch (size) {
-    case "sm":
-      return "16px";
-    case "md":
-      return "18px";
-    case "lg":
-      return "20px";
-    default:
-      return "18px";
-  }
-};
-
-// A styled span to wrap the icons
-const IconContainer = styled.span<{
-  margin?: string;
-  size: "sm" | "md" | "lg";
-}>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: ${({ size }) => getIconSize(size)};
-  height: ${({ size }) => getIconSize(size)};
-  ${({ margin }) => margin && `margin: ${margin};`}
-`;
-
-export const Button = ({
-  children,
+const MainButton = ({
+  text,
+  width,
   onClick,
   variant = "primary",
-  size = "md",
+  status,
   iconLeft,
   iconRight,
+  icon,
+  isIconOnly = false,
+  size = "md",
+  disabled,
 }: ButtonProps) => {
+  const { ripples, addRipple } = Ripple();
+
+  const statusVariants = {
+    primary:
+      "from-primary-600 to-primary-700 border-primary-400 hover:outline-primary-200",
+    error:
+      "from-error-600 to-error-700 border-error-400 hover:outline-error-200",
+    success:
+      "from-success-600 to-success-700 border-success-400 hover:outline-success-200",
+    warning:
+      "from-warning-600 to-warning-700 border-warning-400 hover:outline-warning-200",
+  };
+
+  const getTypeClasses = () => {
+    const buttonStatusClass = status
+      ? statusVariants[status]
+      : statusVariants.primary;
+    const statusColor = status ? status : "primary";
+    const borderColor = status ? `${statusColor}-400` : "border";
+
+    const sizeClasses = {
+      sm: isIconOnly
+        ? "h-[32px] w-[32px] min-h-[32px] min-w-[32px]"
+        : "h-[32px] min-h-[32px] max-h-[32px]",
+      md: isIconOnly
+        ? "h-[36px] w-[36px] min-h-[36px] min-w-[36px]"
+        : "h-[36px] min-h-[36px] max-h-[36px]",
+      lg: isIconOnly
+        ? "h-[40px] w-[40px] min-h-[40px] min-w-[40px]"
+        : "h-[40px] min-h-[40px] max-h-[40px]",
+    };
+
+    return clsx(
+      "rounded-md whitespace-nowrap relative flex flex-row items-center justify-center gap-4 ease-in-out px-12 transition-transform active:scale-95 duration-150",
+      {
+        [`px-4 bg-gradient-to-b ${buttonStatusClass} border text-white hover:outline hover:outline-2`]:
+          variant === "primary",
+        [`px-4 bg-background border border-${borderColor} text-${statusColor}-700 hover:outline hover:outline-2 hover:outline-${statusColor}-200 hover:border-${statusColor}-600`]:
+          variant === "solid",
+        [`px-4 bg-elevation border border-${borderColor} text-${statusColor}-700 hover:outline hover:outline-2 hover:outline-${statusColor}-200 hover:border-${statusColor}-600`]:
+          variant === "base",
+        "opacity-50 pointer-events-none select-none grayscale cursor-not-allowed hover:outline-none hover:border-border filter saturate-50 bg-opacity-75":
+          disabled,
+        "cursor-pointer": !disabled,
+        "w-full": width === "full" && !isIconOnly,
+        "w-fit": (width === "fit" || !width) && !isIconOnly,
+        [sizeClasses[size]]: true,
+        "!p-0": isIconOnly,
+      }
+    );
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!disabled) {
+      addRipple(e);
+      onClick?.();
+    }
+  };
+
   return (
-    <StyledButton onClick={onClick} variant={variant} size={size}>
-      {iconLeft && (
-        <IconContainer size={size} margin="0 8px 0 0">
-          {iconLeft}
-        </IconContainer>
+    <button
+      className={clsx(getTypeClasses(), "overflow-hidden relative")}
+      onClick={handleClick}
+      disabled={disabled}
+    >
+      {isIconOnly ? (
+        <span className="flex items-center justify-center w-full h-full">
+          {icon}
+        </span>
+      ) : (
+        <>
+          {iconLeft && (
+            <span className="flex items-center leading-none">{iconLeft}</span>
+          )}
+          <p
+            className={clsx("whitespace-nowrap leading-none relative z-10", {
+              "text-xs": size === "sm",
+              "text-sm": size === "md",
+              "text-md": size === "lg",
+              "text-light": disabled,
+            })}
+          >
+            {text}
+          </p>
+          {iconRight && (
+            <span className="flex items-center leading-none">{iconRight}</span>
+          )}
+        </>
       )}
-      {children}
-      {iconRight && (
-        <IconContainer size={size} margin="0 0 0 8px">
-          {iconRight}
-        </IconContainer>
-      )}
-    </StyledButton>
+      {ripples}
+    </button>
   );
 };
+
+export default MainButton;
