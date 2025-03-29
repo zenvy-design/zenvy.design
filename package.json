@@ -25,11 +25,9 @@
     "clsx": "^2.1.1",
     "crypto": "^1.0.1",
     "lucide-react": "^0.485.0",
-    "postcss": "^8.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "styled-components": "^6.1.15",
-    "tailwindcss": "^4.0.17"
+    "styled-components": "^6.1.15"
   },
   "repository": {
     "type": "git",
@@ -59,14 +57,16 @@
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.16",
+    "autoprefixer": "^10.4.21",
     "babel-plugin-styled-components": "^2.1.4",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-storybook": "^0.12.0",
+    "postcss": "^8.5.3",
     "storybook": "^8.6.11",
+    "tailwindcss": "^4.0.17",
     "typescript": "^5.2.2",
     "unplugin-fonts": "^1.1.1",
     "vite": "^5.0.8"
