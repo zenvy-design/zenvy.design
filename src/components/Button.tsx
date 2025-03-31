@@ -16,7 +16,7 @@ type ButtonProps = {
   disabled?: boolean;
 };
 
-const MainButton = ({
+const Button = ({
   text,
   width,
   onClick,
@@ -47,7 +47,9 @@ const MainButton = ({
       ? statusVariants[status]
       : statusVariants.primary;
     const statusColor = status ? status : "primary";
-    const borderColor = status ? `${statusColor}-400` : "border";
+    const borderColor = status
+      ? `border-${status}-400 hover:border-${status}-400 hover:outline hover:outline-2 hover:outline-${status}-200`
+      : "border-border hover:border-primary-600 hover:outline hover:outline-2 hover:outline-primary-200";
 
     const sizeClasses = {
       sm: isIconOnly
@@ -66,9 +68,9 @@ const MainButton = ({
       {
         [`px-4 bg-gradient-to-b ${buttonStatusClass} border text-white hover:outline hover:outline-2`]:
           variant === "primary",
-        [`px-4 bg-background border border-${borderColor} text-${statusColor}-700 hover:outline hover:outline-2 hover:outline-${statusColor}-200 hover:border-${statusColor}-600`]:
+        [`px-4 bg-elevation border ${borderColor} text-${statusColor}-700 hover:outline hover:outline-2 hover:outline-${statusColor}-200 hover:border-${statusColor}-600`]:
           variant === "solid",
-        [`px-4 bg-elevation border border-${borderColor} text-${statusColor}-700 hover:outline hover:outline-2 hover:outline-${statusColor}-200 hover:border-${statusColor}-600`]:
+        [`px-4 bg-transparent border ${borderColor} text-${statusColor}-700`]:
           variant === "base",
         "opacity-50 pointer-events-none select-none grayscale cursor-not-allowed hover:outline-none hover:border-border filter saturate-50 bg-opacity-75":
           disabled,
@@ -123,4 +125,4 @@ const MainButton = ({
   );
 };
 
-export default MainButton;
+export default Button;
